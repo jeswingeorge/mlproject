@@ -1,5 +1,5 @@
 import sys
-import logging
+from logger import logging
 
 def error_message_details(error, error_detail:sys):
     _,_,exc_tb = error_detail.exc_info()
@@ -23,10 +23,11 @@ class CustomException(Exception):
     def __repr__(self):
         return f"{CustomException.__name__}: {self.error_message}"
     
-if __name__ == "__main__":
-    try:
-        a=1/0  # This will raise a ZeroDivisionError
-    except Exception as e:
-        raise CustomException(e, sys)
+# if __name__ == "__main__":
+#     try:
+#         a=1/0  # This will raise a ZeroDivisionError
+#     except Exception as e:
+#         logging.info("ZeroDivisionError occurred")  
+#         raise CustomException(e, sys)
 
     
