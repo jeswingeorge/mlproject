@@ -34,7 +34,7 @@ class DataIngestion:
         logging.info("Entered the data ingestion method or component")
         try:
             # Read the dataset from the CSV file or from databases
-            df = pd.read_csv('notebook\data\StudentsPerformance.csv')
+            df = pd.read_csv('notebook\data\StudentsPerformance.csv')  ## Line to change if reading from a different source or databases
             logging.info("Dataset read as pandas DataFrame")
 
             # Create directories if they do not exist
