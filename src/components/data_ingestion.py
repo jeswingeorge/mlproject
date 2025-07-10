@@ -8,6 +8,9 @@ import numpy as np
 
 from sklearn.model_selection import train_test_split 
 
+from src.components.data_transformation import DataTransformationConfig
+from src.components.data_transformation import DataTransformation
+
 from dataclasses import dataclass
 
 @dataclass
@@ -34,8 +37,12 @@ class DataIngestion:
         logging.info("Entered the data ingestion method or component")
         try:
             # Read the dataset from the CSV file or from databases
-            df = pd.read_csv('notebook\data\StudentsPerformance.csv')  ## Line to change if reading from a different source or databases
+            df = pd.read_csv('notebook/data/StudentsPerformance.csv')  ## Line to change if reading from a different source or databases
             logging.info("Dataset read as pandas DataFrame")
+
+            ## Update the column names to replace spaces with underscores
+            df.columns = df.columns.str.replace(' ', '_', regex=True)
+            logging.info("Column names updated to replace spaces with underscores")
 
             # Create directories if they do not exist
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
@@ -63,10 +70,17 @@ class DataIngestion:
         
 if __name__ == "__main__":
     obj = DataIngestion()
-    train_data, test_data, raw_data = obj.initiate_data_ingestion()
-    print(f"Train Data Path: {train_data}")
-    print(f"Test Data Path: {test_data}")
-    print(f"Raw Data Path: {raw_data}")
+    train_data_path, test_data_path, raw_data_path = obj.initiate_data_ingestion()
+    print(f"Train Data Path: {train_data_path}")
+    print(f"Test Data Path: {test_data_path}")
+    print(f"Raw Data Path: {raw_data_path}")
+    
+    ### create an object of DataTransformation class
+    data_transformation = DataTransformation()
+    ### call the initiate_data_transformation method to transform the data
+    train_arr, test_arr, preprocessing_obj = data_transformation.initiate_data_transformation(train_data_path, test_data_path)
+    print(f"Preprocessing Object Path: {DataTransformationConfig().preprocessor_obj_file_path}")
+
 
 # This code is designed to be run as a script, and it will execute the data ingestion process
 # when run directly. It will print the paths of the train, test, and raw data files created during the process.
