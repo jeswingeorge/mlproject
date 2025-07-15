@@ -5,11 +5,15 @@ from src.logger import logging
 
 import pandas as pd
 import numpy as np
+import pprint
 
 from sklearn.model_selection import train_test_split 
 
 from src.components.data_transformation import DataTransformationConfig
 from src.components.data_transformation import DataTransformation
+
+from src.components.model_trainer import ModelTrainerConfig
+from src.components.model_trainer import ModelTrainer
 
 from dataclasses import dataclass
 
@@ -78,8 +82,19 @@ if __name__ == "__main__":
     ### create an object of DataTransformation class
     data_transformation = DataTransformation()
     ### call the initiate_data_transformation method to transform the data
-    train_arr, test_arr, preprocessing_obj = data_transformation.initiate_data_transformation(train_data_path, test_data_path)
-    print(f"Preprocessing Object Path: {DataTransformationConfig().preprocessor_obj_file_path}")
+    # train_arr, test_arr, preprocessing_obj = data_transformation.initiate_data_transformation(train_data_path, test_data_path)
+    # print(f"Preprocessing Object Path: {DataTransformationConfig().preprocessor_obj_file_path}")
+
+    ### The preprocessor object is saved in the artifacts folder
+    ### But we dont need the preprocessor object in the model trainer as it was already created        
+    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_data_path, test_data_path)
+
+    ### call the ModelTrainer class to initiate model training
+    modeltrainer = ModelTrainer()
+    pprint.pp(modeltrainer.initiate_model_trainer(train_array=train_arr, test_array=test_arr))
+
+     
+
 
 
 # This code is designed to be run as a script, and it will execute the data ingestion process
