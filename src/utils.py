@@ -7,6 +7,9 @@ import pandas as pd
 from src.exception import CustomException
 from src.logger import logging
 
+from sklearn.model_selection import GridSearchCV
+
+# Using dill for serialization as it can handle more complex objects than pickle
 import dill
 
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
@@ -30,7 +33,7 @@ def save_object(file_path, obj):
     
 
 
-def evaluate_model(X_train, y_train, X_test, y_test, models):
+def evaluate_model(X_train, y_train, X_test, y_test, models, params):
     """
     Function to evaluate multiple models and return a report.
     """
@@ -38,8 +41,18 @@ def evaluate_model(X_train, y_train, X_test, y_test, models):
         model_report = {}
         
         for model_name, model in models.items():
+            gs = GridSearchCV(estimator=model, param_grid=params.get(model_name, {}), cv=3, n_jobs=-1, verbose=1)
+
             logging.info(f"Training model: {model_name}")
-            model.fit(X_train, y_train)  # Fit the model on training data
+            # model.fit(X_train, y_train)  # Fit the model on training data # replace with GridSearchCV
+            gs.fit(X_train, y_train)
+
+            # model = gs.best_estimator_  # Get the best model from GridSearchCV
+
+            model.set_params(**gs.best_params_)
+            model.fit(X_train,y_train)
+            logging.info(f"Best parameters for {model_name}: {gs.best_params_}")
+
             logging.info(f"Model {model_name} trained successfully.")
 
             y_train_pred = model.predict(X_train)
