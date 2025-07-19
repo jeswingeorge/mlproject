@@ -20,4 +20,5 @@ tzdata==2025.2
 catboost
 xgboost
 dill
+Flask
 -e .
